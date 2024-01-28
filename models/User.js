@@ -1,5 +1,7 @@
 const { Schema, model } = require('mongoose');
 
+let re = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+
 const userSchema = new Schema(
     {
         username: {    
@@ -11,7 +13,7 @@ const userSchema = new Schema(
             type: String,
             unique: true,
             required: true,
-            match: '/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/', // i have no idea if this regex is correct
+            match: re, // i have no idea if this regex is correct
         },
         thoughts: [
             {
@@ -35,7 +37,7 @@ const userSchema = new Schema(
 )
 
 userSchema.virtual('friendCount').get(function () {
-    return this.friends.length;
+    if (this.friends) {return this.friends.length};
 });
 
 const User = model('user', userSchema);

@@ -14,7 +14,7 @@ module.exports = {
             const thoughts = await Thought.find();
 
             res.json(thoughts);
-        } catch {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
@@ -25,7 +25,7 @@ module.exports = {
             const newThought = await Thought.findOne({_id: req.params.thoughtId});
 
             res.json(newThought);
-        } catch {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
@@ -33,9 +33,18 @@ module.exports = {
 
     async createThought (req,res) {
         try {
-            const thought = await Thought.create(req.body);
+            const thought = await Thought.create({
+                thoughtText: req.body.thoughtText,
+                username: req.body.username
+            });
+
+            let currentUser = await User.findOne({_id: req.body.userId});
+
+            currentUser.thoughts.push({_id: req.body.userId});
+            currentUser.save();
+
             res.json (thought);
-        } catch {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
@@ -63,7 +72,7 @@ module.exports = {
             }
 
             res.json ({message: 'Thought successfully deleted!'});
-        } catch {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
@@ -82,7 +91,7 @@ module.exports = {
             }
             
             res.json(thought);
-        } catch {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
@@ -101,7 +110,7 @@ module.exports = {
             }
 
             res.json(thought);
-        } catch {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }

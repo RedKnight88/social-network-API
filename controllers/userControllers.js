@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongoose').Types;
-const { Thought, User, Friend } = require('../models')
+const { Thought, User, Reaction } = require('../models')
 
 module.exports = {
     async getUsers(req,res) {
@@ -7,7 +7,7 @@ module.exports = {
             const users = await User.find();
 
             res.json(users);
-        } catch {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
@@ -15,10 +15,10 @@ module.exports = {
 
     async getOneUser(req,res) {
         try {
-            const newUser = await User.findOne({_id: req.params.UserId});
+            const newUser = await User.findOne({_id: req.params.userId});
 
             res.json(newUser);
-        } catch {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
@@ -28,7 +28,22 @@ module.exports = {
         try {
             const user = await User.create(req.body);
             res.json (user);
-        } catch {
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json(err);
+        }
+    },
+
+    async updateUser(req,res) {
+        try {
+            const user = await User.findOneAndUpdate({_id: req.params.userId}, 
+                {
+                    username: req.body.username,
+                    email: req.body.email
+                }
+            );
+            res.json(user);
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
@@ -36,7 +51,7 @@ module.exports = {
 
     async deleteUser (req,res) {
         try {
-            const user = await User.findOneAndRemove({_id: req.params.UserId});
+            const user = await User.findOneAndRemove({_id: req.params.userId});
 
             // do i need to delete all thoughts associated through the username??
 
@@ -45,7 +60,7 @@ module.exports = {
             }
 
             res.json ({message: 'User successfully deleted!'});
-        } catch {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
@@ -54,7 +69,7 @@ module.exports = {
     async createFriend(req,res) {
         try {
             const user = await User.findOneAndUpdate(
-                {_id: req.params.UserId},
+                {_id: req.params.userId},
                 { $addToSet: {friends: req.body}},
                 { runValidators: true, new: true}
             );
@@ -64,7 +79,7 @@ module.exports = {
             }
             
             res.json(user);
-        } catch {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
@@ -73,8 +88,8 @@ module.exports = {
     async deleteFriend(req,res) {
         try {
             const user = await User.findOneAndUpdate(
-                {_id: req.params.UserId},
-                { $pull: {friends: {friendId:req.params.FriendId}}},
+                {_id: req.params.userId},
+                { $pull: {friends: {friendId:req.params.friendId}}},
                 { runValidators: true, new: true}
             );
             
@@ -83,7 +98,7 @@ module.exports = {
             }
 
             res.json(user);
-        } catch {
+        } catch (err) {
             console.log(err);
             return res.status(500).json(err);
         }
