@@ -50,6 +50,21 @@ module.exports = {
         }
     },
 
+    async updateThought(req,res) {
+        try {
+            const thought = await Thought.findOneAndUpdate({_id: req.params.thoughtId}, 
+                {
+                    thoughtText: req.body.thoughtText
+                },
+                {new:true}
+            );
+            res.json(thought);
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json(err);
+        }
+    },
+
     async deleteThought (req,res) {
         try {
             const thought = await Thought.findOneAndRemove({_id: req.params.thoughtId});
@@ -60,8 +75,8 @@ module.exports = {
 
             // unsure if this is necessary but it feels like I should update the array
             const user = await User.findOneAndUpdate(
-                {_id: req.params.thoughtId},
-                {$pull: {_id: req.params.thoughtId}},
+                {username: thought.username},
+                {$pull: {thoughts: req.params.thoughtId}},
                 {new: true}
             );
             
@@ -101,7 +116,7 @@ module.exports = {
         try {
             const thought = await Thought.findOneAndUpdate(
                 {_id: req.params.thoughtId},
-                { $pull: {reactions: {reactionId:req.params.reactionId}}},
+                { $pull: {reactions: {_id: req.params.reactionId}}},
                 { runValidators: true, new: true}
             );
             
