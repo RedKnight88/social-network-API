@@ -12,6 +12,7 @@ const thoughtSchema = new Schema(
         createdAt: {
             type: Date,
             default: Date.now,
+            get: formatDate
             // getter method to format timestamp on query?
         },
         username: {
@@ -23,10 +24,15 @@ const thoughtSchema = new Schema(
     {
         toJSON: {
             virtuals: true,
+            getters: true
         },
         id: false,
     }
 )
+
+function formatDate(date) {
+    return date.toLocaleString();
+}
 
 thoughtSchema.virtual('reactionCount').get(function () {
     return this.reactions.length;
