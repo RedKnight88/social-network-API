@@ -10,8 +10,8 @@ const userSchema = new Schema(
         email: {    
             type: String,
             unique: true,
-            required: true
-            // something about email address validation, mongoose has matching validation
+            required: true,
+            match: '/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/', // i have no idea if this regex is correct
         },
         thoughts: [
             {
