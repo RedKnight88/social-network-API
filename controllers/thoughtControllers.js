@@ -1,14 +1,8 @@
-const { ObjectId } = require('mongoose').Types;
-const { Thought, User, Reaction } = require('../models')
-
-// aggregates if needed go here
-// const reactionCount = async () => {
-//     const numOfReacts = await Thought.aggregate().count('reactionCount')
-//     return numOfReacts;
-// }
-
+// Bring in models
+const { Thought, User } = require('../models')
 
 module.exports = {
+    // Function for GET all thoughts in database
     async getThoughts(req,res) {
         try {
             const thoughts = await Thought.find();
@@ -20,6 +14,7 @@ module.exports = {
         }
     },
 
+    // Function for GET one thought in database by Id
     async getOneThought(req,res) {
         try {
             const newThought = await Thought.findOne({_id: req.params.thoughtId});
@@ -31,6 +26,7 @@ module.exports = {
         }
     },
 
+    // Function for POST a thought, using the userId as an identifier to add the thought to the user's array of thoughts
     async createThought (req,res) {
         try {
             const thought = await Thought.create({
@@ -40,6 +36,7 @@ module.exports = {
 
             let currentUser = await User.findOne({_id: req.body.userId});
 
+            // found another way to update a document, rather than doing aggregate function queries using mongo's dollarsign functions
             currentUser.thoughts.push({_id: req.body.userId});
             currentUser.save();
 
@@ -50,6 +47,7 @@ module.exports = {
         }
     },
 
+    // Function for PUT for a thought, just updates the text
     async updateThought(req,res) {
         try {
             const thought = await Thought.findOneAndUpdate({_id: req.params.thoughtId}, 
@@ -65,6 +63,7 @@ module.exports = {
         }
     },
 
+    // Function for DELETE thought, and pulls the thought out of the user's array
     async deleteThought (req,res) {
         try {
             const thought = await Thought.findOneAndRemove({_id: req.params.thoughtId});
@@ -73,7 +72,6 @@ module.exports = {
                 return res.status(404).json({ message: 'No such thought exists' });
             }
 
-            // unsure if this is necessary but it feels like I should update the array
             const user = await User.findOneAndUpdate(
                 {username: thought.username},
                 {$pull: {thoughts: req.params.thoughtId}},
@@ -93,6 +91,7 @@ module.exports = {
         }
     },
 
+    // Function for POST a reaction to a thought, using the dollarsign functions in mongoDB
     async createReaction(req,res) {
         try {
             const thought = await Thought.findOneAndUpdate(
@@ -112,6 +111,7 @@ module.exports = {
         }
     },
 
+    // Function for DELETE a reaction to a thought
     async deleteReaction(req,res) {
         try {
             const thought = await Thought.findOneAndUpdate(

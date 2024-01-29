@@ -1,3 +1,4 @@
+// API extends to two routes, users and thoughts
 const router = require('express').Router();
 
 const thoughtRoutes = require('./thoughtRoutes');

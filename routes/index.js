@@ -1,3 +1,4 @@
+// Sets the routing for the server, setting the api extension for the server to use the files in the api folder
 const router = require('express').Router();
 const apiRoutes = require('./api');
 

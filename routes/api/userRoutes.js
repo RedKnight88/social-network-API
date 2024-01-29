@@ -1,4 +1,5 @@
 const router = require('express').Router();
+// Brings in functions from controller files, which call on the database to deliver info from server
 const { 
     getUsers,
     createUser,
@@ -10,17 +11,20 @@ const {
 } = require('../../controllers/userControllers')
 
 // ROUTE - /api/users
-// GET all, GET single (by ID), POST new user, PUT user update (by ID), DELETE user (by ID)
 
+// GET all, POST new user
 router.route('/').get(getUsers).post(createUser);
 
+// GET single (by ID), PUT user update (by ID), DELETE user (by ID)
 router.route('/:userId').get(getOneUser).delete(deleteUser).put(updateUser);
 
-// ROUTE - /api/users/:userId/friends/:friendId
-// POST new friend, DELETE friend from list
 
+// ROUTE - /api/users/:userId/friends/:friendId
+
+// POST new friend
 router.route('/:userId/friends').post(createFriend);
 
+// DELETE friend from list
 router.route('/:userId/friends/:friendId').delete(deleteFriend);
 
 module.exports = router;

@@ -34,10 +34,12 @@ function formatDate(date) {
     return date.toLocaleString();
 }
 
+// This creates data shown that is retrieved each time the object is called from the database
 thoughtSchema.virtual('reactionCount').get(function () {
     return this.reactions.length;
 });
 
+// This initializes the schema as a model and document in the database
 const Thought = model('thought', thoughtSchema);
 
 module.exports = Thought;

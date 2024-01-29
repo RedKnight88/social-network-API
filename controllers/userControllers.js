@@ -1,7 +1,8 @@
-const { ObjectId } = require('mongoose').Types;
-const { Thought, User, Reaction } = require('../models')
+// Bring in models
+const { User } = require('../models')
 
 module.exports = {
+    // Function for GET all users in database
     async getUsers(req,res) {
         try {
             const users = await User.find();
@@ -13,6 +14,7 @@ module.exports = {
         }
     },
 
+    // Function for GET one user in database by Id
     async getOneUser(req,res) {
         try {
             const newUser = await User.findOne({_id: req.params.userId});
@@ -24,6 +26,7 @@ module.exports = {
         }
     },
 
+    // Function for POST a user
     async createUser (req,res) {
         try {
             const user = await User.create(req.body);
@@ -34,6 +37,7 @@ module.exports = {
         }
     },
 
+    // Function for PUT for a user, updates email and username
     async updateUser(req,res) {
         try {
             const user = await User.findOneAndUpdate({_id: req.params.userId}, 
@@ -49,6 +53,7 @@ module.exports = {
         }
     },
 
+    // Function for DELETE a user
     async deleteUser (req,res) {
         try {
             const user = await User.findOneAndRemove({_id: req.params.userId});
@@ -66,6 +71,7 @@ module.exports = {
         }
     },
 
+    // Function to POST to add a friend to a user's friends array
     async createFriend(req,res) {
         try {
             const user = await User.findOneAndUpdate(
@@ -85,6 +91,7 @@ module.exports = {
         }
     },
 
+    // Function to DELETE a friend from a user's array
     async deleteFriend(req,res) {
         try {
             const user = await User.findOneAndUpdate(
